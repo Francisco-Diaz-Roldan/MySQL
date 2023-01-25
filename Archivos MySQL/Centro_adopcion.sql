@@ -77,4 +77,30 @@ Alter table Perros add column Estado enum("adiestrado", "salvaje");
 update Perros set Estado="adiestrado" where ID>3;
 update Perros set Estado="salvaje" where ID<=3;
 
-select * from Perros;
+
+/*Ejercicio 6.- Realiza las siguientes modificaciones de contenidos en las tablas creadas.
+- Modifica la altura de los perros para que los datos se muestren en centímetros en vez de en metros
+- Modifica la edad de los perros para que los datos se muestren en meses en vez de en años
+- Añade en los nombres de los humanos el prefijo Sr o Sra dependiendo de su sexo
+- Modifica el atributo “sexo” para que aparezca Femenino o Masculino en vez de F o M
+* Los datos de la edad se actualizan una sola vez al año*/
+
+alter table Perros modify column  altura decimal(3,0); #Esto lo he puesto para que al pasar luego a cm me lo coja
+update Perros set altura=altura*100; 
+update Perros set edad=edad*12;
+update Humanos set nombre = CONCAT("Sr", nombre) where sexo='M';
+update Humanos set nombre = CONCAT("Sra", nombre) where sexo='F';
+
+#Actualizar sexo para que incluya "Masculino" y "Femenino" y luego borrar F y M
+alter table Humanos modify column sexo enum("F", "M", "Masculino", "Femenino");
+update Humanos set sexo="Masculino" where sexo='M';
+update Humanos set sexo="Femenino" where sexo='F';
+alter table Humanos modify column sexo enum("Masculino", "Femenino");
+
+/*Ejercicio 7.- Realiza las siguientes modificaciones de contenidos en las tablas creadas.
+- Modifica la columna Edad de la tabla Humanos para que se llame ‘Años’
+- Modifica la columna N_cuenta para que los números de cuenta puedan contener 12 cifras más
+- Modifica las claves primarias para que no puedan ser NULL*/
+
+
+

@@ -32,10 +32,8 @@ SELECT * FROM PELICULAS;
 #Ejercicio 1 Modifica la duracion de las peliculas para que se muestre el contenido en horas en vez de en minutos.
 
 ALTER TABLE PELICULAS DROP check `duracion_chk`;
-
 ALTER TABLE PELICULAS modify column Duracion decimal(5,2);
-
-Update PELICULAS set Duracion WHERE Duracion=Duracion/60;
+Update PELICULAS set Duracion=Duracion/60;
 
 
 #Ejercicio 2 Modifica la Puntuación para que se muestren 2 decimales en lugar de 1.
