@@ -8,13 +8,11 @@ CREATE TABLE PELICULAS(
 
 ID int not null primary key auto_increment, 
 Nombre varchar(15),
-Duracion int constraint `duracion_chk` #Añadimos una restricción (constraint) y después la quitamos
-check(Duracion between 50 and 200),
+Duracion int constraint `chk_duracion` check(Duracion between 50 and 200), #Añadimos una restricción (constraint) y después la quitamos
 Director varchar(20),
-Genero enum("Acción", "Terror", "Aventura", "Comedia"),
+Genero enum("Accion", "Terror", "Aventura", "Comedia"),
 Puntuacion decimal(2,1),
 Fecha date
-
 );
 
 INSERT INTO PELICULAS(Nombre, Duracion, Director, Genero, Puntuacion, Fecha) VALUES #NO SE PONE EL ID PORQUE ES AUTOINCREMENTADO
@@ -31,8 +29,13 @@ SELECT * FROM PELICULAS;
 
 #Ejercicio 1 Modifica la duracion de las peliculas para que se muestre el contenido en horas en vez de en minutos.
 
-ALTER TABLE PELICULAS DROP check `duracion_chk`;
+#ELIMINAMOS LA RESTRICCIÓN
+ALTER TABLE PELICULAS DROP check `chk_duracion`;#También vale drop constraint `chk_duracion`
+
+#MODIFICAMOS VALORES DE LA DURACION A DECIMAL
 ALTER TABLE PELICULAS modify column Duracion decimal(5,2);
+
+#MODIFICAMS VALORES DE DURACION PARA QUE APARZCAN EN HORAS
 Update PELICULAS set Duracion=Duracion/60;
 
 
@@ -53,13 +56,13 @@ INSERT INTO PELICULAS(Nombre, Duracion, Director, Genero, Puntuacion, Fecha)  VA
 
 #Ejercicio 5 Modifica la columna puntuación para que se llame Puntos
 
-ALTER TABLE PELICULAS CHANGE Puntuacion  Puntos decimal(3,2);
+# ALTER TABLE PELICULAS CHANGE Puntuacion  Puntos decimal(3,2); es igual que abajo pero de otra manera
+ALTER TABLE PELICULAS RENAME COLUMN Puntuacion to Puntos;
 
 
 #Ejercicio 6 Añade una nueva columna Critica que admita los valores(MALA, REGULAR, BUENA, MUY BUENA).
 
-ALTER TABLE PELICULAS
-ADD COLUMN Critica enum("MALA", "REGULAR", "BUENA", "MUY BUENA");
+ALTER TABLE PELICULAS ADD COLUMN Critica enum("MALA", "REGULAR", "BUENA", "MUY BUENA");
 
 
 /*Ejercicio 7 Añade valores a la columna Critica siguiendo los siguientes criterios:
@@ -68,13 +71,13 @@ ADD COLUMN Critica enum("MALA", "REGULAR", "BUENA", "MUY BUENA");
         - Si la película tiene más o igual a un 6.5 y menos de un 8.5 en la puntuación añade el valor BUENA.
          - Si la película tiene más o igual a un 8.5 en la puntuación añade el valor MUY BUENA.*/
 
-UPDATE PELICULAS SET Critica = "MALA" WHERE Puntuacion<5 AND Puntuacion=5;
+UPDATE PELICULAS SET Critica = "MALA" WHERE Puntos<=5;
 
-UPDATE PELICULAS SET Critica = "REGULAR" WHERE Puntuacion>5 AND Puntuacion<6.5;
+UPDATE PELICULAS SET Critica = "REGULAR" WHERE Puntos>5 AND Puntos<6.5;
 
-UPDATE PELICULAS SET Critica = "BUENA" WHERE Puntuacion>6.5 AND Puntuacion<8.5;
+UPDATE PELICULAS SET Critica = "BUENA" WHERE Puntos>6.5 AND Puntos<8.5;
 
-UPDATE PELICULAS SET Critica = "MUY BUENA" WHERE Puntuacion>8.5;
+UPDATE PELICULAS SET Critica = "MUY BUENA" WHERE Puntos>8.5;
 
 
 #Ejercicio 8.- Elimina las filas de las películas con ID superior a 6.
@@ -84,20 +87,23 @@ DELETE FROM PELICULAS WHERE ID>6;
 
 #Ejercicio 9.- Elimina las filas que sean del año 2010.
 
-DELETE FROM PELICULAS WHERE Fecha>2009-12-31 AND Fecha<2011-12-31;
+DELETE FROM PELICULAS WHERE Fecha like "2010%"; #Que contenga 2010
 
 #Ejercicio 10.- Elimina las filas de las películas dirigidas por Ary Aster y tengan una duración menor a 3 horas.
 
-DELETE FROM PELICULAS WHERE Director="Ary Aster";
+DELETE FROM PELICULAS WHERE Director="Ary Aster" and Duracion<3;
 
 
 #Ejercicio 11.- Elimina las filas de las películas que contengan una X en su nombre.
 
-DELETE FROM PELICULAS WHERE Nombre="x";
+DELETE FROM PELICULAS WHERE Nombre like"%x%";
 
 #Ejercicio 12.- Elimina las filas de las películas del mes de enero, y que la crítica sea distina a BUENA o MUY BUENA.
 
-DELETE FROM PELICULAS WHERE Fecha="01" AND Critica="BUENA" OR  Critica=" MUY BUENA";
+DELETE FROM PELICULAS WHERE month(Fecha)=01 AND (Critica!="BUENA" OR  Critica!=" MUY BUENA");
+#Hace lo mismo que arriba
+DELETE FROM PELICULAS WHERE Fecha like "%-01-%" AND (Critica<>"BUENA" OR  Critica!=" MUY BUENA");
+
 
 #Para añadir el constraint del check y eliminarlo
 /*ALTER TABLE PELICULAS
