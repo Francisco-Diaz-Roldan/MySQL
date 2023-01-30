@@ -23,7 +23,8 @@ create table Humanos(
 DNI varchar(9) not null,
 nombre varchar (15),
 apellido varchar (15),
-n_cuenta decimal(8,0),
+#n_cuenta decimal(8,0),
+n_cuenta int constraint chk_cuenta check(length(n_cuenta)=8),
 edad int,
 sexo enum("F", "M")
 );
@@ -72,7 +73,7 @@ insert into Humanos(DNI, nombre, apellido, n_cuenta, edad, sexo) values
 insert into Perros(ID, nombre, edad, altura, raza, color, fecha_nac) values
 (25, "Timmy", 3, 1.85, "Shar Pei", "marron", "2016-10-12");
 
-Alter table Perros add column Estado enum("adiestrado", "salvaje");
+Alter table Perros add column Estado enum("adiestrado", "salvaje") default "adiestrado";
 
 update Perros set Estado="adiestrado" where ID>3;
 update Perros set Estado="salvaje" where ID<=3;
@@ -85,22 +86,45 @@ update Perros set Estado="salvaje" where ID<=3;
 - Modifica el atributo “sexo” para que aparezca Femenino o Masculino en vez de F o M
 * Los datos de la edad se actualizan una sola vez al año*/
 
-alter table Perros modify column  altura decimal(3,0); #Esto lo he puesto para que al pasar luego a cm me lo coja
+alter table Perros modify altura decimal(5,2); #Esto lo he puesto para que al pasar luego a cm me lo coja
 update Perros set altura=altura*100; 
+alter table Perros modify altura decimal(3,0);#Esto lo he puesto para que no se quede con los 2 decimales (n,00)
+
+
 update Perros set edad=edad*12;
-update Humanos set nombre = CONCAT("Sr", nombre) where sexo='M';
-update Humanos set nombre = CONCAT("Sra", nombre) where sexo='F';
+update Humanos set nombre = CONCAT("Sr ", nombre) where sexo='M';
+update Humanos set nombre = CONCAT("Sra ", nombre) where sexo='F';
 
 #Actualizar sexo para que incluya "Masculino" y "Femenino" y luego borrar F y M
-alter table Humanos modify column sexo enum("F", "M", "Masculino", "Femenino");
+alter table Humanos modify sexo enum("F", "M", "Masculino", "Femenino");#Pongo las 2 enum que tengo más las que quiero tener
 update Humanos set sexo="Masculino" where sexo='M';
 update Humanos set sexo="Femenino" where sexo='F';
-alter table Humanos modify column sexo enum("Masculino", "Femenino");
+alter table Humanos modify column sexo enum("Masculino", "Femenino");#Elimino las opciones sobrantes
 
 /*Ejercicio 7.- Realiza las siguientes modificaciones de contenidos en las tablas creadas.
 - Modifica la columna Edad de la tabla Humanos para que se llame ‘Años’
 - Modifica la columna N_cuenta para que los números de cuenta puedan contener 12 cifras más
 - Modifica las claves primarias para que no puedan ser NULL*/
 
+alter table Humanos rename column edad to años;
 
+alter table Humanos drop constraint chk_cuenta;#Hacemos esto para eliminar la restricción
+alter table Humanos modify n_cuenta int constraint chk_cuenta check (length(n_cuenta)>=8 and length(n_cuenta)<20);
 
+alter table Humanos modify DNI varchar(9) primary key not null;
+alter table Perros modify ID int not null;
+
+/*Ejercicio 8.- Elimina los siguientes contenidos de las tablas creadas
+- Elimina los perros que tengan más de 80 meses de edad.
+- Elimina los humanos con menos de 30 años
+- Elimina la columna Años de la tabla Humanos
+- Elimina la clave foránea de la tabla Humanos
+- Elimina la tabla Humanos
+- Elimina la base de datos “Centro_adopción”*/
+
+alter table Perros drop foreign key fk_ID_perros;
+delete from Perros where edad>80;
+delete from Humanos where años<30;
+alter table Humanos drop column años;
+drop table Humanos;
+drop database Centro_adopcion;
