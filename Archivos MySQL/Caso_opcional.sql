@@ -11,6 +11,8 @@ use Caso_opcional;
 • El atributo Tarea de la tabla Tiempo deberá ser de tipo decimal (máximo 2 decimales) y distinto de 0.///////////////
 • El atributo Email de la tabla Usuario deberá contener el carácter “@”.*/
 
+#Terminar el ejercicio con las PK y las FK
+
 create table USUARIO (
 login varchar (15) not null primary key constraint check_login check ((length(login)>=8)),
 pass varchar (40), 

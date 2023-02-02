@@ -24,7 +24,7 @@ select * from POKEMON;
 
 #Ejercicio 2.- Muestra todos los nombres de los pokemon.
 
-select Nombre from POKEMON;
+select Nombre from POKEMON order by Nombre;
 
 #Ejercicio 3.- Muestra todos los nombres de los pokemon junto a su edad.
 
@@ -40,7 +40,7 @@ select Nombre, Edad from POKEMON order by edad desc;
 
 #Ejercicio 6.- Muestra el número de pokemons en total en la tabla POKEMON.
 
-select count(Nombre) from POKEMON;
+select count(*) from POKEMON;
 
 #Ejercicio 7.- Muestra la media de edad de los pokemon.
 
@@ -64,8 +64,8 @@ select Edad from POKEMON order by Edad desc limit 3;
 
 #Ejercicio 12.- Muestra los datos del pokemon con más edad de la tabla POKEMON.
 
-select * from POKEMON order by edad desc limit 1;
+select * from POKEMON order by Edad desc limit 1;
 
 #Ejercicio 13.- Muestra los distintos tipos de Tipo de pokemon que existen en la tabla POKEMON sin que se repitan en el resultado.
 
-select distinct Tipo from POKEMON;
+select distinct (Tipo) from POKEMON;
