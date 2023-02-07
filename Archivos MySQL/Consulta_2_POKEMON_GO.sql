@@ -37,7 +37,9 @@ Select Nombre, Tipo from POKEMON where Fecha_nac like "2000%" or Fecha_nac like 
 
 #Ejercicio 5.- Muestra el ID de los Pokemon que su nombre comience por la letra "C" y contengan la letra "A" ordenador por el nombre del Pokemon.
 
-select ID from POKEMON where Nombre like "C%" and nombre like "%a%" order by Nombre asc;
+select ID from POKEMON where Nombre like "C%" and nombre like "%a%" order by Nombre asc; 
+
+#select ID from POKEMON where Nombre like "C%a%" order by Nombre; 
 
 #Ejercicio 6.- Muestra todos pokemon que hayan nacido en el mes de octubre o su edad esté entre 29 y 35 años (ambos incluidos).
 
@@ -51,11 +53,13 @@ Select ID, Altura from POKEMON where Nombre not like "%e%" order by Altura desc 
 
 Select * from POKEMON where (tipo="PLANTA" or Tipo="ROCA") and Altura>1.5 and Edad<>14;
 
+Select * from POKEMON where tipo in("PLANTA","ROCA") and Altura>1.5 and Edad!=14;
+
 #Ejercicio 9.- Muestra los datos de los 3 Pokemon de menor edad que su nombre tenga una longitud exacta de 6 caracteres. Ordena el resultado de menor a mayor.
 
-Select * from POKEMON where char_length(Nombre)=6 order by Edad asc limit 3;
+Select * from POKEMON where char_length(Nombre)=6 order by Edad limit 3;
 
 #Ejercicio 10.- Muestra el ID, Nombre y Edad de los Pokemon con un nombre que comience por la letra J, contenga una letra "M" y termine por la letra "A", 
 # o que su edad se muestre con un solo caracter. Ordena los resultados alfabéticamente por el nombre del Pokemon.
 
-select ID, Nombre, Edad  from POKEMON where Nombre like "J%m%a" or length(Edad)=1 order by Nombre desc;
+select ID, Nombre, Edad  from POKEMON where Nombre like "J%m%a" or char_length(Edad)=1 order by Nombre;
