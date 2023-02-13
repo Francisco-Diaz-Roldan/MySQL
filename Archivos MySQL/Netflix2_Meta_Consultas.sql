@@ -40,28 +40,52 @@ INSERT INTO Peliculas (ID, Nombre, Duracion, Director, Genero, Nota, Protagonist
 (7, 'El Hoyo', 110, 'Ivan', 'acción', 9.9, "1265"),
 (8, 'Diamante en bruto', 140, 'Paola', 'acción', 8.1, "1265");
 
-#Hacer pprimero lo de dentro del parentesis
 
 #Ejercicio 1.- Muestra los datos de los actores que hayan nacido antes del actor con DNI "1212" ordenador por Nombre. 
 
-SELECT * FROM Reparto WHERE Fecha_nac < (select DNI from Reparto where DNI like "1212" ) ORDER BY Nombre;
+SELECT * FROM Reparto WHERE Fecha_nac < (select Fecha_nac from Reparto where DNI like "1212" ) ORDER BY Nombre;
 
 
 /*Ejercicio 2.- Muestra los datos de los actores que hayan nacido el mes de febrero y tengan el mismo número de caracteres
 (o más) en el nombre que la actriz de apellido "Hayek". El resultado no debe incluir a la actriz con apellido "Hayek".*/
 
+select R.* from Reparto as R where R.Fecha_nac like "%-02-%" and char_length(R.Nombre)>= (select char_length(R.Nombre) from Reparto as R where R.Apellido like "Hayek") and R.Apellido not like "Hayek";
+
+
 #Ejercicio 3.- Muestra los DNIs de los actores junto con la media de puntuación de las películas que hayan rodado.
+
+select R.DNI, avg(P.Nota) from Peliculas as P inner join Reparto as R ON R.DNI=P.Protagonista group by R.DNI;
+
 
 #Ejercicio 4.- Muestra los datos de la película con puntuación menor a la pelicula rodada por el actor de nombre "Will".
 
+Select P.* from Peliculas as P where P.Nota < (select P.Nota from Peliculas as P inner join Reparto as R ON R.DNI=P.Protagonista and R.Nombre like "Will");
+
+
 /*Ejercicio 5.- Muestra los datos de las películas con puntuación mayor que la película con mayor puntuación rodada por el actor
  de apellido "Clooney". Ordena los resultados por la puntuación de mayor a menor.*/
-
+ 
+ 
+select P.* from Peliculas as P where P.Nota >(select P.Nota from Peliculas as P inner join Reparto as R ON R.DNI=P.Protagonista and R.Apellido like "Clooney" order by P.Nota desc limit 1) order by P.Nota desc ;
+ 
 #Ejercicio 6.- Muestra el número de peliculas que haya rodado el protagonista de Oceans Eleven en una columna llamada "Número".
+
+select count(P.ID) as Numero from Peliculas as P where R.Nombre=(
+select R.Nombre from Reparto as R inner join Peliculas as P ON R.DNI=P.Protagonista and P.Nombre like "Oceans Eleven");
+
+
+select count(P.ID) as Numero from Peliculas as P inner join Reparto as R On R.DNI=P.Protagonista and R.Nombre=(
+select R.Nombre from Reparto as R inner join Peliculas as P ON R.DNI=P.Protagonista and P.Nombre like "Oceans Eleven");
+
+
 
 /*Ejercicio EXTRA.- Muestra los datos de las películas con puntuación mayor que la peor pelicula del actor que haya nacido en el mes de
 diciembre, y menor que la mejor película que haya rodado el mismo actor. El actor en cuestión no puede ser el mismo que haya rodado la
 pelicula "Bright".*/
 
-
+select * from Peliculas as P where P.Nota >
+(select min(P.Nota) from Peliculas as P inner join Reparto as R ON R.DNI=P.Protagonista where R.Fecha_nac like "%-12-%" and P.Nombre not like "Bright")
+and P.Nota <
+(select P.Nota from Peliculas as P inner join Reparto as R ON R.DNI=P.Protagonista where R.Fecha_nac like "%-12-%" and P.Nombre not like "Bright" order by P.Nota desc limit 1)
+order by P.Nota desc;
 
