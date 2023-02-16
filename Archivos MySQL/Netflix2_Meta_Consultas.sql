@@ -56,6 +56,7 @@ select R.* from Reparto as R where R.Fecha_nac like "%-02-%" and char_length(R.N
 
 select R.DNI, avg(P.Nota) from Peliculas as P inner join Reparto as R ON R.DNI=P.Protagonista group by R.DNI;
 
+select DNI, (select avg(Nota) from Peliculas where Protagonista=DNI) from Reparto;
 
 #Ejercicio 4.- Muestra los datos de la película con puntuación menor a la pelicula rodada por el actor de nombre "Will".
 
@@ -77,7 +78,7 @@ select R.Nombre from Reparto as R inner join Peliculas as P ON R.DNI=P.Protagoni
 select count(P.ID) as Numero from Peliculas as P inner join Reparto as R On R.DNI=P.Protagonista and R.Nombre=(
 select R.Nombre from Reparto as R inner join Peliculas as P ON R.DNI=P.Protagonista and P.Nombre like "Oceans Eleven");
 
-
+select count (ID) as Numero from Peliculas where Protagonista =(select Protagonista from Peliculas where nombre="Oceans Eleven");
 
 /*Ejercicio EXTRA.- Muestra los datos de las películas con puntuación mayor que la peor pelicula del actor que haya nacido en el mes de
 diciembre, y menor que la mejor película que haya rodado el mismo actor. El actor en cuestión no puede ser el mismo que haya rodado la
@@ -88,4 +89,23 @@ select * from Peliculas as P where P.Nota >
 and P.Nota <
 (select P.Nota from Peliculas as P inner join Reparto as R ON R.DNI=P.Protagonista where R.Fecha_nac like "%-12-%" and P.Nombre not like "Bright" order by P.Nota desc limit 1)
 order by P.Nota desc;
+
+select * from Peliculas where
+nota > (select min (P.Nota) from Peliculas as P inner join Reparto as R on P.Protagonista = R.DNI where month(R.Fecha_nac)=12 and P.Nombre<>"Bright")
+and nota < (select max (P.Nota) from Peliculas as P inner join Reparto as R on P.Protagonista = R.DNI where month(R.Fecha_nac)=12 and P.Nombre<>"Bright");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
