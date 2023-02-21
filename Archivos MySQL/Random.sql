@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS Empresa;
+USE Empresa;
+
 CREATE TABLE Departamento ( 
 codDepto varchar (4) PRIMARY KEY,
  nombreDpto varchar (20) NOT NULL,
@@ -66,7 +69,11 @@ Realiza las siguientes consultas SQL propuestas a las tablas Departamento y Empl
 
 1. Obtener los datos completos de los empleados.
 
+select * from Empleado;
+
 2. Obtener los datos completos de los departamentos.
+
+select  * from Departamento;
 
 3. Obtener los datos de los empleados con cargo 'Secretaria'.
 

@@ -44,6 +44,38 @@ INSERT INTO Peliculas (nombre_peli, duracion, director_peli, genero_peli, nota_p
 ('Diamante en bruto', 140, 'Paola', 'acción', 7, 8, 108);
 
 
+
+
+select nombre, fecha_nac from Actores  where sueldo<1000000 and (nombre  like "%e%" or nombre  like "%n%" or char_length(nombre)<4) order by fecha_nac desc;
+
+SELECT a.nombre AS NOM_ACTOR, COUNT(*) AS PELIS
+FROM Actores a
+JOIN Peliculas p ON a.id_actor = p.protagonista
+WHERE a.sexo != 'masculino'
+GROUP BY a.id_actor
+ORDER BY PELIS DESC
+LIMIT 1;
+
+SELECT nombre AS NOM_ACTOR, sueldo AS SUELDO_ACTOR
+FROM Actores
+WHERE sueldo > (SELECT sueldo * 2 FROM Actores WHERE nombre = 'Noa')
+ORDER BY sueldo DESC;
+
+SELECT DISTINCT Actores.nombre AS act
+FROM Actores
+JOIN Peliculas ON Actores.id_actor = Peliculas.protagonista
+WHERE MONTH(Actores.fecha_nac) = MONTH('1981-06-06')
+AND DAY(Actores.fecha_nac) = DAY('1981-06-06')
+AND Peliculas.director_peli IN ('Jon', 'Adrian', 'Nuria', 'Ivan');
+
+SELECT *
+FROM Peliculas
+WHERE nombre_peli REGEXP '[a-zA-Z]{2,}' AND duracion < (SELECT duracion FROM Peliculas WHERE nombre_peli = 'Animales nocturnos')
+AND nota_peli > (SELECT nota_peli FROM Peliculas WHERE protagonista = 104)
+ORDER BY nota_peli;
+
+select nombre from Actores as A where 
+
 #Ejercicio 1.- Obtén todos los datos de los actores con un sueldo menor que el sueldo de Penelope, y que hayan rodado una película de acción.
 
 select a.* from actores as a inner join peliculas as p on a.id_actor=p.protagonista where a.sueldo <
@@ -86,8 +118,6 @@ select nombre_peli from peliculas where protagonista <>
 #Ejercicio 7.- Obtén los datos del actor con el mismo nombre que el director de la película con menor puntuación de la tabla Películas. 
 
 select a.* from actores as a inner join peliculas as p on a.id_actor=p.protagonista where a.nombre =(select p.director_peli from peliculas as p order by p.nota_peli limit 1);
-
-
 
 
 
