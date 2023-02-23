@@ -27,7 +27,24 @@ Genero enum("Masculino", "Femenino", "Otros") default "Otros",
 Fecha date constraint  chk_fecha check(Fecha not like "%-06-%"or Fecha not like "%-07-%"or Fecha not like "%-08-%") not null,
 Email varchar(20) constraint chk_email check(Email like "@gmail" or Email like "@hotmail")
 );
+/*
+create table datos (
+ID  int auto_increment primary key,
+Nombre varchar (10) constraint chk_nombre check(char_length(nombre)>=5) not null,
+Apellido varchar (10) constraint chk_apellido check(Apellido not like "%s%s%s%"),
+Altura decimal(3,2) not null, 
+Edad int constraint chk_edad check(Edad between 18 and 63),
 
+Direccion varchar(50) constraint chk_direccion 
+check(((Direccion like "%calle%" or Direccion like "%avenida%")and(Direccion like "%n.º%" or Direccion like "%Bloque%")) and char_length(Direccion)>=10) not null,
+Genero enum("Masculino", "Femenino", "Otros") default "Otros",
+Fecha date constraint  chk_fecha check(Fecha not like "%-06-%"or Fecha not like "%-07-%"or Fecha not like "%-08-%") not null,#chech(month(fecha)<6 or month(fecha)>8)
+Email varchar(20) constraint chk_email
+check(Email like "%@%" and (Emalil like "%gmail%" or Email like "%hotmail%"))
+
+)auto_increment=50;
+
+#alter table datos auto_increment=50; Se puede meter asi o antes del ; de la tabla como se ve arriba*/
 alter table datos auto_increment=50;
 #alter table datos drop constraint chk_nombre;
 insert into datos (Nombre, Altura, Direccion, Fecha) values
@@ -42,11 +59,16 @@ ALTER TABLE datos RENAME JOAQUIN;
 
 #- Modifica del nombre de la columna “email” a “correo”
 alter table JOAQUIN drop constraint chk_email;
+
 ALTER TABLE JOAQUIN
 CHANGE Email Correo varchar(20);
+#ALTER TABLE JOAQUIN rename column Email to Correo; es lo mismo que arriba
+Alter table JOAQUIN ADD constraint chk_email check(Email like "%@gmail%" or Email like "%@hotmail%");
+
 
 #- Modifica la restricción de la fecha para que permita valores de fechas contenidos en verano e invierno.
 alter table JOAQUIN drop constraint chk_fecha;
+alter table JOAQUIN add constraint  chk_fecha check(Fecha not like "%-06-%"or Fecha not like "%-07-%"or Fecha not like "%-08-%");
 
 
 #- Modifica el atributo “altura” para que permita dos enteros con dos decimales
@@ -67,7 +89,7 @@ update JOAQUIN set Altura=CONCAT (Altura, 'm');
 
 #- Modifica el atributo Edad para que permita valores mayores de 65
 alter table JOAQUIN drop constraint chk_edad;
-Alter table JOAQUIN ADD CONSTRAINT chk_edad check(Edad > 18);
+Alter table JOAQUIN ADD CONSTRAINT chk_edad check((Edad between 18 and 63) or Edad>65);
 
 #- Modifica el valor de género para que aparezca Femenino por defecto
 alter table JOAQUIN modify Genero enum("Masculino", "Femenino", "Otros") default "Femenino";
@@ -82,7 +104,7 @@ DELETE FROM JOAQUIN WHERE Genero like "@Masculino";
 
 
 #- Elimina la columna ID
-Alter table JOAQUIN DROP ID;
+Alter table JOAQUIN DROP COLUMN ID;
 
 
 #- Elimina la tabla del ejercicio 1
@@ -90,4 +112,9 @@ Drop table JOAQUIN;
 
 
 select * from JOAQUIN;
-
+SELECT day(CURDATE());
+SELECT month(CURDATE());
+SELECT year(CURDATE());
+SELECT current_date();
+select current_time();
+SELECT (year(current_date())) - (year(current_date())-2);
